@@ -1,0 +1,6 @@
+﻿  main.cpp
+C:\Users\Derek Stanford\Desktop\final project\FinalProject\BasicOpenGLProject\main.cpp(251,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Derek Stanford\Desktop\final project\FinalProject\BasicOpenGLProject\main.cpp(252,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Derek Stanford\Desktop\final project\FinalProject\BasicOpenGLProject\main.cpp(441,39): warning C4244: 'argument': conversion from 'const float' to 'int', possible loss of data
+C:\Users\Derek Stanford\Desktop\final project\FinalProject\BasicOpenGLProject\main.cpp(441,22): warning C4244: 'argument': conversion from 'const float' to 'int', possible loss of data
+  BasicOpenGLProject.vcxproj -> C:\Users\Derek Stanford\Desktop\final project\FinalProject\x64\Debug\FinalProject.exe
