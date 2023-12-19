@@ -1,3 +1,5 @@
+//Created by David Bates, Bodrul Babul, Andrew Garza, and Derek Stanford.
+
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <glm/glm.hpp>
@@ -7,6 +9,7 @@
 #include "shader.h"
 #include "shaderprogram.h"
 #include <ctime>
+#include <vector>
 /*=================================================================================================
 	DOMAIN
 =================================================================================================*/
@@ -33,10 +36,16 @@ bool draw_wireframe = false;
 	SHADERS & TRANSFORMATIONS
 =================================================================================================*/
 
-ShaderProgram PassthroughShader;
-ShaderProgram PerspectiveShader;
 
-ShaderProgram RayTracer;
+
+ShaderProgram RayTracer1;
+ShaderProgram RayTracer2;
+ShaderProgram RayTracer3;
+ShaderProgram RayTracer4;
+ShaderProgram RayTracer5;
+
+int curShad = 0;
+
 
 glm::mat4 PerspProjectionMatrix( 1.0f );
 glm::mat4 PerspViewMatrix( 1.0f );
@@ -114,6 +123,14 @@ float axis_vertices[] = {
 
 float axis_colors[] = {
 	//x axis
+	1.0f, 0.0f, 0.0f, 1.0f,
+	1.0f, 0.0f, 0.0f, 1.0f,
+	1.0f, 0.0f, 0.0f, 1.0f,
+	1.0f, 0.0f, 0.0f, 1.0f,
+	1.0f, 0.0f, 0.0f, 1.0f,
+	1.0f, 0.0f, 0.0f, 1.0f,
+	1.0f, 0.0f, 0.0f, 1.0f,
+	1.0f, 0.0f, 0.0f, 1.0f,
 	1.0f, 0.0f, 0.0f, 1.0f,
 	0.0f, 1.0f, 0.0f, 1.0f,
 	0.0f, 0.0f,1.0f, 1.0f,
@@ -194,11 +211,14 @@ void CreateTransformationMatrices( void )
 	PerspModelMatrix = glm::scale( PerspModelMatrix, glm::vec3( perspZoom ) );
 }
 
-void CreateShaders( void )
+void CreateShaders(void)
 {
 
-	RayTracer.Create( "./shaders/raytracer.vert", "./shaders/raytracer.frag" );
-
+	RayTracer1.Create("./shaders/raytracer.vert", "./shaders/raytracer1.frag");
+	RayTracer2.Create("./shaders/raytracer.vert", "./shaders/raytracer2.frag");
+	RayTracer3.Create("./shaders/raytracer.vert", "./shaders/raytracer3.frag");
+	RayTracer4.Create("./shaders/raytracer.vert", "./shaders/raytracer4.frag");
+	RayTracer5.Create("./shaders/raytracer.vert", "./shaders/raytracer5.frag");
 }
 
 /*=================================================================================================
@@ -269,11 +289,9 @@ void keyboard_func( unsigned char key, int x, int y )
 	{
 		case 'w':
 		{
-			draw_wireframe = !draw_wireframe;
-			if( draw_wireframe == true )
-				std::cout << "Wireframes on.\n";
-			else
-				std::cout << "Wireframes off.\n";
+			curShad++;
+			if (curShad >= 5)
+				curShad = 0;
 			break;
 		}
 
@@ -286,80 +304,7 @@ void keyboard_func( unsigned char key, int x, int y )
 	}
 }
 
-void key_released( unsigned char key, int x, int y )
-{
-	key_states[ key ] = false;
-}
 
-void key_special_pressed( int key, int x, int y )
-{
-	key_special_states[ key ] = true;
-}
-
-void key_special_released( int key, int x, int y )
-{
-	key_special_states[ key ] = false;
-}
-
-void mouse_func( int button, int state, int x, int y )
-{
-	// Key 0: left button
-	// Key 1: middle button
-	// Key 2: right button
-	// Key 3: scroll up
-	// Key 4: scroll down
-
-	if( x < 0 || x > WindowWidth || y < 0 || y > WindowHeight )
-		return;
-
-	float px, py;
-	window_to_scene( x, y, px, py );
-
-	if( button == 3 )
-	{
-		perspZoom += 0.03f;
-	}
-	else if( button == 4 )
-	{
-		if( perspZoom - 0.03f > 0.0f )
-			perspZoom -= 0.03f;
-	}
-
-	mouse_states[ button ] = ( state == GLUT_DOWN );
-
-	LastMousePosX = x;
-	LastMousePosY = y;
-}
-
-void passive_motion_func( int x, int y )
-{
-	if( x < 0 || x > WindowWidth || y < 0 || y > WindowHeight )
-		return;
-
-	float px, py;
-	window_to_scene( x, y, px, py );
-
-	LastMousePosX = x;
-	LastMousePosY = y;
-}
-
-void active_motion_func( int x, int y )
-{
-	if( x < 0 || x > WindowWidth || y < 0 || y > WindowHeight )
-		return;
-
-	float px, py;
-	window_to_scene( x, y, px, py );
-
-	if( mouse_states[0] == true )
-	{
-		perspRotationY += ( x - LastMousePosX ) * perspSensitivity;
-		perspRotationX += ( y - LastMousePosY ) * perspSensitivity;
-	}
-
-	LastMousePosX = x;
-	LastMousePosY = y;
-}
 
 /*=================================================================================================
 	RENDERING
@@ -380,27 +325,67 @@ void display_func( void )
 	float inputTime = (std::clock() - start) / (float)(CLOCKS_PER_SEC);
 
 	// Choose which shader to user, and send the transformation matrix information to it
-	RayTracer.Use();
-	RayTracer.SetUniform( "projectionMatrix", glm::value_ptr( PerspProjectionMatrix ), 4, GL_FALSE, 1 );
-	RayTracer.SetUniform( "viewMatrix", glm::value_ptr( PerspViewMatrix ), 4, GL_FALSE, 1 );
-	RayTracer.SetUniform( "modelMatrix", glm::value_ptr( PerspModelMatrix ), 4, GL_FALSE, 1 );
-	RayTracer.SetUniform("windowSize", WindowWidth, WindowHeight);
-	RayTracer.SetUniform("time", inputTime);
-	// Drawing in wireframe?
-	if( draw_wireframe == true )
-		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-	else
-		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
-	// Bind the axis Vertex Array Object created earlier, and draw it
+
+	if (curShad == 0) {
+
+		RayTracer1.Use();
+		RayTracer1.SetUniform("projectionMatrix", glm::value_ptr(PerspProjectionMatrix), 4, GL_FALSE, 1);
+		RayTracer1.SetUniform("viewMatrix", glm::value_ptr(PerspViewMatrix), 4, GL_FALSE, 1);
+		RayTracer1.SetUniform("modelMatrix", glm::value_ptr(PerspModelMatrix), 4, GL_FALSE, 1);
+		RayTracer1.SetUniform("windowSize", WindowWidth, WindowHeight);
+		RayTracer1.SetUniform("time", inputTime);
+
+	}
+
+	if (curShad == 1) 
+	{
+		RayTracer2.Use();
+		RayTracer2.SetUniform("projectionMatrix", glm::value_ptr(PerspProjectionMatrix), 4, GL_FALSE, 1);
+		RayTracer2.SetUniform("viewMatrix", glm::value_ptr(PerspViewMatrix), 4, GL_FALSE, 1);
+		RayTracer2.SetUniform("modelMatrix", glm::value_ptr(PerspModelMatrix), 4, GL_FALSE, 1);
+		RayTracer2.SetUniform("windowSize", WindowWidth, WindowHeight);
+		RayTracer2.SetUniform("time", inputTime);
+	}
+
+	if (curShad == 2)
+	{
+		
+		RayTracer3.Use();
+		RayTracer3.SetUniform("projectionMatrix", glm::value_ptr(PerspProjectionMatrix), 4, GL_FALSE, 1);
+		RayTracer3.SetUniform("viewMatrix", glm::value_ptr(PerspViewMatrix), 4, GL_FALSE, 1);
+		RayTracer3.SetUniform("modelMatrix", glm::value_ptr(PerspModelMatrix), 4, GL_FALSE, 1);
+		RayTracer3.SetUniform("windowSize", WindowWidth, WindowHeight);
+		RayTracer3.SetUniform("time", inputTime);
+		
+	}
+
+	if (curShad == 3)
+	{
+
+		RayTracer4.Use();
+		RayTracer4.SetUniform("projectionMatrix", glm::value_ptr(PerspProjectionMatrix), 4, GL_FALSE, 1);
+		RayTracer4.SetUniform("viewMatrix", glm::value_ptr(PerspViewMatrix), 4, GL_FALSE, 1);
+		RayTracer4.SetUniform("modelMatrix", glm::value_ptr(PerspModelMatrix), 4, GL_FALSE, 1);
+		RayTracer4.SetUniform("windowSize", WindowWidth, WindowHeight);
+		RayTracer4.SetUniform("time", inputTime);
+
+	}
+	if (curShad == 4)
+	{
+
+		RayTracer5.Use();
+		RayTracer5.SetUniform("projectionMatrix", glm::value_ptr(PerspProjectionMatrix), 4, GL_FALSE, 1);
+		RayTracer5.SetUniform("viewMatrix", glm::value_ptr(PerspViewMatrix), 4, GL_FALSE, 1);
+		RayTracer5.SetUniform("modelMatrix", glm::value_ptr(PerspModelMatrix), 4, GL_FALSE, 1);
+		RayTracer5.SetUniform("windowSize", WindowWidth, WindowHeight);
+		RayTracer5.SetUniform("time", inputTime);
+
+	}
 	glBindVertexArray( axis_VAO );
 	glDrawArrays( GL_TRIANGLES, 0, 48 ); // 6 = number of vertices in the object
 
-	//
-	// Bind and draw your object here
-	//
 
-	// Unbind when done
 	glBindVertexArray( 0 );
 
 	// Swap the front and back buffers
@@ -463,12 +448,7 @@ int main( int argc, char** argv )
 	glutIdleFunc( idle_func );
 	glutReshapeFunc( reshape_func );
 	glutKeyboardFunc( keyboard_func );
-	glutKeyboardUpFunc( key_released );
-	glutSpecialFunc( key_special_pressed );
-	glutSpecialUpFunc( key_special_released );
-	glutMouseFunc( mouse_func );
-	glutMotionFunc( active_motion_func );
-	glutPassiveMotionFunc( passive_motion_func );
+
 
 	// Do program initialization
 	init();

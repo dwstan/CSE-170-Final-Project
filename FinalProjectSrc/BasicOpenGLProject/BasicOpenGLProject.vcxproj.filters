@@ -49,10 +49,22 @@
     <None Include="shaders\persplight.vert">
       <Filter>shaders</Filter>
     </None>
-    <None Include="shaders\raytracer.frag">
+    <None Include="shaders\raytracer1.frag">
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\raytracer.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\raytracer3.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\raytracer2.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\raytracer4.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\raytracer5.frag">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

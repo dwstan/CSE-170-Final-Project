@@ -1,9 +1,1 @@
-﻿  main.cpp
-C:\Users\Derek Stanford\Desktop\final project\FinalProjectSrc\BasicOpenGLProject\main.cpp(257,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Derek Stanford\Desktop\final project\FinalProjectSrc\BasicOpenGLProject\main.cpp(258,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Derek Stanford\Desktop\final project\FinalProjectSrc\BasicOpenGLProject\main.cpp(448,39): warning C4244: 'argument': conversion from 'const float' to 'int', possible loss of data
-C:\Users\Derek Stanford\Desktop\final project\FinalProjectSrc\BasicOpenGLProject\main.cpp(448,22): warning C4244: 'argument': conversion from 'const float' to 'int', possible loss of data
-  shader.cpp
-  shaderprogram.cpp
-  Generating Code...
-  BasicOpenGLProject.vcxproj -> C:\Users\Derek Stanford\Desktop\final project\FinalProjectSrc\x64\Debug\FinalProject.exe
+﻿  BasicOpenGLProject.vcxproj -> C:\Users\Derek Stanford\Downloads\cse 170 lab demo use this\CSE-170-Final-Project-main\FinalProjectSrc\x64\Debug\FinalProject.exe

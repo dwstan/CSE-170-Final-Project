@@ -153,8 +153,12 @@
     <None Include="shaders\persp.vert" />
     <None Include="shaders\persplight.frag" />
     <None Include="shaders\persplight.vert" />
-    <None Include="shaders\raytracer.frag" />
+    <None Include="shaders\raytracer1.frag" />
     <None Include="shaders\raytracer.vert" />
+    <None Include="shaders\raytracer2.frag" />
+    <None Include="shaders\raytracer3.frag" />
+    <None Include="shaders\raytracer4.frag" />
+    <None Include="shaders\raytracer5.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
